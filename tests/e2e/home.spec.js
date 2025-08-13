@@ -1,5 +1,7 @@
 const { test } = require('../support')
 const { expect, request } = require('@playwright/test')
+const data_login = require('../support/fixtures/login.json')
+
 
 
 test('deve acessar a pagina home do sistem', async ({ page }) => {
@@ -22,19 +24,40 @@ test('deve acessar a pagina home do sistem', async ({ page }) => {
 
 });
 
-test('POST cria novo recurso e valida resposta', async ({ request }) => {
-  const newPost = {
-    username: 'leonardo@teste',
-    password: '123456',
-    
-  };
+test('POST com login valido', async ({ request }) => {
+  const requestBody = data_login.valido
 
-  const response = await request.api.setToken(newPost)
+  const response = await request.api.setToken(requestBody)
   // Valida status 201 (Created)
   expect(response.status()).toBe(401);
 
-  // Converte resposta para JSON
- // const responseBody = await response.json();
+  // Valida se os dados retornados batem com os enviados
+  //expect(responseBody).toMatchObject(newPost);
+
+  // Valida se um ID foi gerado
+  expect(response).toHaveProperty('token');
+});
+
+test('POST com login sem senha', async ({ request }) => {
+  const requestBody = data_login.semSenha
+
+  const response = await request.api.setToken(requestBody)
+  // Valida status 201 (Created)
+  expect(response.status()).toBe(401);
+
+  // Valida se os dados retornados batem com os enviados
+  //expect(responseBody).toMatchObject(newPost);
+
+  // Valida se um ID foi gerado
+  expect(response).toHaveProperty('token');
+});
+
+test('POST com login sem User', async ({ request }) => {
+  const requestBody = data_login.semUser
+
+  const response = await request.api.setToken(requestBody)
+  // Valida status 201 (Created)
+  expect(response.status()).toBe(401);
 
   // Valida se os dados retornados batem com os enviados
   //expect(responseBody).toMatchObject(newPost);
