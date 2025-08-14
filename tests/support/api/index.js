@@ -27,12 +27,20 @@ export class Api {
             data: requestBody
         });
 
-        const responseBody = JSON.parse(await response.text())
+       
+        return response;
 
 
     }
 
+    async getProducts(userId) {
 
+        const response = await this.request.get(`https://fakestoreapi.com/products/${userId}`);
+
+        return response;
+
+
+    }
 
 
 }
