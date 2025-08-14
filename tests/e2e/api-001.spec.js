@@ -1,33 +1,51 @@
 const { test } = require('../support')
 const { expect, request } = require('@playwright/test')
+const { Validador } = require('../support/api/utils/validador.js')
+
 
 test('GET Produtos', async ({ request }) => {
 
-    const response = await request.api.getProducts(1)
-    const responseBody = await response.json();
+    const chaves = ['id', 'title', 'price', 'description', 'category', 'image', 'rating']
 
-    // Verifica se a resposta foi recebida
-    expect(response).toBeDefined();
+    const produtoSchema = {
+        id: expect.any(Number),
+        title: expect.any(String),
+        price: expect.any(Number),
+        description: expect.any(String),
+        category: expect.any(String),
+        image: expect.any(String),
+        rating: {
+            rate: expect.any(Number),
+            count: expect.any(Number),
+        },
+    }
 
-    // Valida o status HTTP
-    expect(response.status()).toBe(200);
+    const { response, responseBody } = await request.api.getProducts(1)
+    
+    Validador.validaStatusCode(response, 200)
+    Validador.validaChaves(responseBody, Object.keys(produtoSchema))
+    Validador.validaChaves(responseBody.rating, ['rate', 'count'])
+    Validador.validaTiposDoSchema(responseBody, produtoSchema)
+    Validador.validaObjetoComSchema(responseBody, produtoSchema)
 
-    // Valida que não há campos inesperados (opcional)
-    const expectedKeys = ['id', 'title', 'price', 'description', 'category', 'image', 'rating'];
-    expect(Object.keys(responseBody).sort()).toEqual(expectedKeys.sort());
+
+    
+
+
+
 
     // Valida tipos dos campos principais
-    expect(typeof responseBody.id).toBe('number');
-    expect(typeof responseBody.title).toBe('string');
-    expect(typeof responseBody.price).toBe('number');
-    expect(typeof responseBody.description).toBe('string');
-    expect(typeof responseBody.category).toBe('string');
-    expect(typeof responseBody.image).toBe('string');
+    expect(typeof responseBody.id).toBe('number')
+    expect(typeof responseBody.title).toBe('string')
+    expect(typeof responseBody.price).toBe('number')
+    expect(typeof responseBody.description).toBe('string')
+    expect(typeof responseBody.category).toBe('string')
+    expect(typeof responseBody.image).toBe('string')
 
     // Valida subcampos de rating
     expect(responseBody.rating).toMatchObject({
         rate: expect.any(Number),
         count: expect.any(Number),
-    });
+    })
 
-});
+})

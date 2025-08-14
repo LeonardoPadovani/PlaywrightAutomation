@@ -27,7 +27,7 @@ export class Api {
             data: requestBody
         });
 
-       
+
         return response;
 
 
@@ -37,7 +37,12 @@ export class Api {
 
         const response = await this.request.get(`https://fakestoreapi.com/products/${userId}`);
 
-        return response;
+        const responseBody = await response.json();
+
+        return {
+            response,
+            responseBody
+        };
 
 
     }
