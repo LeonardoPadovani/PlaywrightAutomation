@@ -3,6 +3,7 @@ const { expect, request } = require('@playwright/test')
 const { Validador } = require('../../support/api/utils/validador.js')
 
 
+test.describe('[@api] Produtos', () => {
 test('GET Produtos', async ({ request }) => {
 
     const chaves = ['id', 'title', 'price', 'description', 'category', 'image', 'rating']
@@ -38,25 +39,8 @@ test('GET Produtos', async ({ request }) => {
         title: (v) => typeof v === 'string' && v.length > 5,
     });
 
+});
 
 
 
-
-
-
-
-    // Valida tipos dos campos principais
-    expect(typeof responseBody.id).toBe('number')
-    expect(typeof responseBody.title).toBe('string')
-    expect(typeof responseBody.price).toBe('number')
-    expect(typeof responseBody.description).toBe('string')
-    expect(typeof responseBody.category).toBe('string')
-    expect(typeof responseBody.image).toBe('string')
-
-    // Valida subcampos de rating
-    expect(responseBody.rating).toMatchObject({
-        rate: expect.any(Number),
-        count: expect.any(Number),
-    })
-
-})
+});

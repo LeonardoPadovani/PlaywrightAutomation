@@ -4,33 +4,41 @@ export class ApiTest {
 
     constructor(request) {
         this.request = request
-        this.token = undefined
         this.baseApi = process.env.BASE_API
-        
+
     }
 
-    async setToken(requestBody) {
+    async postToken(requestBody) {
         const response = await this.request.post(this.baseApi + '/auth/login', {
-            data: requestBody
+            data: requestBody,
         });
 
-        const responseBody = JSON.parse(await response.text())
-        this.token = responseBody.token
+        const responseBody = await response.json();
+        const token = responseBody.token;
 
+        return {
+            response,
+            responseBody,
+            token,
+        };
     }
 
-    async postMovie(requestBody) {
+
+    async postMovie(token,requestBody) {
         const response = await this.request.post(this.baseApi + '/auth/login', {
             headers: {
-                Authorization: 'Bearer ' + this.token,
+                Authorization: 'Bearer ' + token,
                 ContentType: 'application/json'
             },
             data: requestBody
         });
 
+        const responseBody = await response.json();
 
-        return response;
-
+        return {
+            response,
+            responseBody
+        };
 
     }
 
