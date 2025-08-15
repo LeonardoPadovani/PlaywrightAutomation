@@ -1,10 +1,10 @@
 const { test: base, expect } = require('@playwright/test')
 
-const { HomePage } = require('./pages/HomePage')
-const { ProductsPage } = require('./pages/ProductsPage')
-const { CartPage } = require('./pages/CartPage')
+const { HomePage } = require('./web/pages/HomePage')
+const { ProductsPage } = require('./web/pages/ProductsPage')
+const { CartPage } = require('./web/pages/CartPage')
 
-const { Api } = require('./api')
+const { ApiTest } = require('./api/helpers/api-test-helper')
 
 
 const test = base.extend({
@@ -18,7 +18,7 @@ const test = base.extend({
     },
     request: async ({ request }, use) => {
         const context = request
-        context['api'] = new Api(request)
+        context['apiTest'] = new ApiTest(request)
 
         await use(context)
 

@@ -4,11 +4,12 @@ export class HomePage {
 
     constructor (page) {
         this.page = page
+        this.baseUrl = process.env.BASE_URL
 
     }
 
     async visit() {
-        await this.page.goto('https://www.automationexercise.com/')
+        await this.page.goto(this.baseUrl + '/')
 
     }
 

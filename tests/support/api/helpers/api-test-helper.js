@@ -1,15 +1,16 @@
 
 
-export class Api {
+export class ApiTest {
 
     constructor(request) {
         this.request = request
         this.token = undefined
-
+        this.baseApi = process.env.BASE_API
+        
     }
 
     async setToken(requestBody) {
-        const response = await this.request.post('https://fakestoreapi.com/auth/login', {
+        const response = await this.request.post(this.baseApi + '/auth/login', {
             data: requestBody
         });
 
@@ -19,7 +20,7 @@ export class Api {
     }
 
     async postMovie(requestBody) {
-        const response = await this.request.post('https://fakestoreapi.com/auth/login', {
+        const response = await this.request.post(this.baseApi + '/auth/login', {
             headers: {
                 Authorization: 'Bearer ' + this.token,
                 ContentType: 'application/json'
@@ -35,7 +36,7 @@ export class Api {
 
     async getProducts(userId) {
 
-        const response = await this.request.get(`https://fakestoreapi.com/products/${userId}`);
+        const response = await this.request.get(`${this.baseApi}/products/${userId}`);
 
         const responseBody = await response.json();
 
