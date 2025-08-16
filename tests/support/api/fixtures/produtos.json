@@ -1,0 +1,62 @@
+{
+    "valido": {
+        "username": "leonardo@teste",
+        "password": "123456"
+    },
+    "semUser": {
+        "username": "",
+        "password": "123456"
+    },
+    "semSenha": {
+        "username": "leonardo@teste",
+        "password": ""
+    },
+    "postProdutoSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "required": [
+            "id",
+            "title",
+            "price",
+            "description",
+            "category",
+            "image",
+            "rating"
+        ],
+        "properties": {
+            "id": {
+                "type": "number"
+            },
+            "title": {
+                "type": "string"
+            },
+            "price": {
+                "type": "number"
+            },
+            "description": {
+                "type": "string"
+            },
+            "category": {
+                "type": "string"
+            },
+            "image": {
+                "type": "string"
+            },
+            "rating": {
+                "type": "object",
+                "required": [
+                    "rate",
+                    "count"
+                ],
+                "properties": {
+                    "rate": {
+                        "type": "number"
+                    },
+                    "count": {
+                        "type": "number"
+                    }
+                }
+            }
+        }
+    }
+}

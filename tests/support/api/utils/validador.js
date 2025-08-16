@@ -1,4 +1,7 @@
 const { expect } = require('@playwright/test')
+const Ajv = require('ajv');
+const addFormats = require('ajv-formats');
+
 
 class Validador {
 
@@ -8,55 +11,7 @@ class Validador {
         expect(response.status()).toBe(expectedStatus);
     }
 
-    static validaChaves(objeto, chavesEsperadas) {
-        const chavesAtuais = Object.keys(objeto).sort();
-        const chavesOrdenadas = [...chavesEsperadas].sort();
-
-        expect(chavesAtuais).toEqual(chavesOrdenadas);
-    }
-
-    static validaTiposDoSchema(objeto, schema) {
-        expect(objeto).toMatchObject(schema);
-    }
-
-
-    // Valida um objeto com base em um schema
-    static validaObjetoComSchema(objeto, schema) {
-        const objetoKeys = Object.keys(objeto).sort();
-        const schemaKeys = Object.keys(schema).sort();
-
-        expect(objetoKeys).toEqual(schemaKeys);
-
-        for (const key of schemaKeys) {
-            const valor = objeto[key];
-            const tipoEsperado = schema[key];
-
-            if (Validador._isMatcher(tipoEsperado)) {
-                expect(valor).toEqual(tipoEsperado);
-            } else if (Array.isArray(tipoEsperado)) {
-                expect(Array.isArray(valor)).toBe(true);
-                const itemSchema = tipoEsperado[0];
-                Validador.validaArrayComSchema(valor, itemSchema);
-            } else if (typeof tipoEsperado === 'object' && tipoEsperado !== null) {
-                Validador.validaObjetoComSchema(valor, tipoEsperado);
-            } else {
-                expect(typeof valor).toBe(tipoEsperado);
-            }
-        }
-    }
-
-    // Valida um array de objetos com base em um schema de item
-    static validaArrayComSchema(array, itemSchema) {
-        expect(Array.isArray(array)).toBe(true);
-        for (const item of array) {
-            Validador.validaObjetoComSchema(item, itemSchema);
-        }
-    }
-
-    static _isMatcher(valor) {
-        return typeof valor === 'object' && valor !== null && 'asymmetricMatch' in valor;
-    }
-
+    
     static validaConteudo(objeto, regras) {
         for (const chave in regras) {
             const valor = objeto[chave];
@@ -73,8 +28,24 @@ class Validador {
         }
     }
 
+    static validaSchema(schema, data) {
+        const ajv = new Ajv({ allErrors: true, strict: false });
+        addFormats(ajv); // permite validar formatos como "uri", "email", "date", etc.
 
+        const validate = ajv.compile(schema);
+        const valid = validate(data);
+
+        if (!valid) {
+            console.error('❌ Erros de validação:', JSON.stringify(validate.errors, null, 2));
+            throw new Error('Schema inválido');
+        }
+
+        console.log('✅ Schema válido');
+        return true;
+    }
 }
+
+
 
 module.exports = { Validador }
 
